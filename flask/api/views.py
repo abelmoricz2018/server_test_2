@@ -1,21 +1,37 @@
+from flask import Flask 
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+def create_app():
+    app = Flask(__name__, static_folder='../../build/static', template_folder='../../build')
+
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+
+    db.init_app(app)
+
+ 
+
+    return app
+
 from flask import Blueprint, jsonify, request, render_template
-from . import db
-from .models import Movie
+
+from models import Movie
 import base64
 
 import os
 
 def run_script(layer, channel):
-    my_cmd = 'cd DD && python3 deepdream_api.py -p ' + layer + ' ' + str(channel) + ' test.jpg'
+    my_cmd = 'cd ../DD && python3 deepdream_api.py -p ' + layer + ' ' + str(channel) + ' test.jpg'
     os.system(my_cmd)
     print("os cmd finshed")
 
 def convert_img():
-    with open("DD/outputs/test.jpg", "rb") as img_file:
+    with open("../DD/outputs/test.jpg", "rb") as img_file:
         my_string = base64.b64encode(img_file.read())
     return my_string
 
-main = Blueprint('main', __name__)
+main = create_app()
 
 @main.route('/')
 def index():
@@ -56,3 +72,8 @@ def movies():
         movies.append({'title' : movie.title, 'rating' : movie.rating, 'image' : movie.image})
 
     return jsonify({'movies' : movies})
+
+
+
+if __name__=='__main__':
+	main.run()
