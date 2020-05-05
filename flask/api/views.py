@@ -22,7 +22,7 @@ import base64
 import os
 
 def run_script(layer, channel):
-    my_cmd = 'cd ../DD && python deepdream_api.py -p ' + layer + ' ' + str(channel) + ' test.jpg'
+    my_cmd = 'cd ../DD && python3 deepdream_api.py -p ' + layer + ' ' + str(channel) + ' test.jpg'
     os.system(my_cmd)
     print("os cmd finshed")
 
